@@ -1,0 +1,26 @@
+#! /bin/bash
+#
+# Fonts installer
+
+# Include
+source $( cd "$(dirname "$0")/" && pwd )/utils
+
+info "Configuring: Fonts..."
+
+# Set source and target directories
+fonts_dir="$HOME/.dotfiles/fonts/"
+find_command="find \"$fonts_dir\" \( -name '*.[o,t]tf' -or -name '*.pcf.gz' \) -type f -print0"
+
+font_dir="$HOME/.local/share/fonts"
+mkdir -p $font_dir
+
+# Copy all fonts to user fonts directory
+eval $find_command | xargs -0 -I % cp "%" "$font_dir/"
+
+# Reset font cache on Linux
+if command -v fc-cache @>/dev/null ; then
+    echo "Resetting font cache, this may take a moment..."
+    fc-cache -f $font_dir
+fi
+
+success "Configuring: Fonts... Done."

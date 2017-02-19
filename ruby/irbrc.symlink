@@ -1,0 +1,60 @@
+#! /usr/bin/env ruby
+require 'irb/completion'
+require 'irb/ext/save-history'
+require 'rubygems'
+
+IRB.conf[:SAVE_HISTORY] = 5000
+IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb_history"
+IRB.conf[:AUTO_INDENT] = true
+
+# IRB PROMPT
+# Calculate the ruby string.
+rvm_ruby_string = ENV["rvm_ruby_string"] ||
+  (
+    ENV['GEM_HOME'] &&
+    ( path = ( File.realpath(ENV['GEM_HOME'].to_s) rescue nil ) ) &&
+    ( path = $1 if path =~ /(.+)\/$/ ; true ) &&
+    String(String(path).split(/\//).last).split(/@/).first
+  ) ||
+  ("#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}" rescue nil) ||
+  (RUBY_DESCRIPTION.split(" ")[1].sub('p', '-p') rescue nil ) ||
+  (`ruby -v` || '').split(" ")[1].sub('p', '-p')
+
+# cut ruby- ... everyone knows it's ruby
+rvm_ruby_string = $1 if rvm_ruby_string =~ /^ruby[- ](.*)/
+
+IRB.conf[:PROMPT][:CUSTOM] = {
+  :PROMPT_I => "#{rvm_ruby_string} :%03n > ",  # default prompt
+  :PROMPT_S => "#{rvm_ruby_string} :%03n%l> ", # known continuation
+  :PROMPT_C => "#{rvm_ruby_string} :%03n > ",
+  :PROMPT_N => "#{rvm_ruby_string} :%03n?> ", # unknown continuation
+  :RETURN => " => %s \n",
+}
+
+IRB.conf[:PROMPT_MODE] = :CUSTOM
+
+# Object extension
+class Object
+  # list methods which aren't in superclass
+  def local_methods(obj = self)
+    (obj.methods - obj.class.superclass.instance_methods).sort
+  end
+
+  # print documentation
+  #
+  #   ri 'Array#pop'
+  #   Array.ri
+  #   Array.ri :pop
+  #   arr.ri :pop
+  def ri(method = nil)
+    unless method && method =~ /^[A-Z]/ # if class isn't specified
+      klass = kind_of?(Class) ? name : self.class.name
+      method = [klass, method].compact.join('#')
+    end
+    puts `ri '#{method}'`
+  end
+end
+
+def me
+  User.find_by_login(ENV['USER'].strip)
+end

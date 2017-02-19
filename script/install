@@ -1,0 +1,19 @@
+#! /bin/bash
+#
+# Run all dotfiles installers.
+
+# Include
+source $( cd "$(dirname "$0")/" && pwd )/utils
+
+set -e
+cd "$(dirname $0)"/..
+
+# Install configurations
+info "Run config installers..."
+
+source system/default/install.sh
+
+# Set default shell
+chsh -s /bin/zsh
+
+success "Installed configuration files."

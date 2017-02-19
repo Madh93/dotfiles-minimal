@@ -1,0 +1,41 @@
+#! /bin/bash
+#
+# backup
+#
+# `backup` do a system backup
+
+# Include
+source $HOME/.dotfiles/script/utils
+
+# Configuration
+backupdir="$HOME/.backups"
+target="/"
+backup="$backupdir/$(uname -n)_$(date +%s)_$(date +"%d-%m-%Y")"
+
+success "--- System Backup ---"
+success "Backup target: $target"
+success "Backup destination: $backup.tar.gz"
+
+# Copy data
+start=`date +%s`
+info "[1] Copying files..."
+sudo rsync -aAX --info=progress2 --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found","/home/*","/datos/*","/datos2/*"} $target $backup >/dev/null 2>&1
+success "[1] Files copied!"
+
+# Compress data
+info "[2] Compressing files..."
+sudo tar -zcvf $backup.tar.gz -C $backup . >/dev/null 2>&1
+sudo chown $USER $backup.tar.gz
+success "[2] Files compressed!"
+
+# Delete temporal data
+info "[3] Removing temporal files..."
+sudo rm -rf $backup >/dev/null 2>&1
+sucess "[3] Temporal files removed!"
+
+# Time result
+end=`date +%s`
+runtime=$((end-start))
+((sec=runtime%60, runtime/=60, min=runtime%60, hrs=runtime/60))
+timestamp=$(printf "%d:%02d:%02d" $hrs $min $sec)
+success "System backup done in $timestamp"
