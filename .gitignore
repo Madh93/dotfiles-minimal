@@ -13,6 +13,6 @@ git/gitconfig.local.symlink
 
 virtualenv.symlink/yocto
 
-.swp
+*.swp
 
-.lock
+*.lock
