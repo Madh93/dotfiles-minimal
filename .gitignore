@@ -16,3 +16,4 @@ virtualenv.symlink/yocto
 *.swp
 
 *.lock
+Gemfile.lock

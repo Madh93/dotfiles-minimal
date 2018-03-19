@@ -47,6 +47,18 @@ Plug 'editorconfig/editorconfig-vim'
 " Vim status bar
 Plug 'vim-airline/vim-airline'
 
+" Move lines and slections up/down
+Plug 'matze/vim-move'
+
+" Comments
+Plug 'tomtom/tcomment_vim'
+
+" SnipMate: snippets autocompletation
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
+Plug 'garbas/vim-snipmate'
+Plug 'honza/vim-snippets'
+
 " Holy shit: https://github.com/Valloric/YouCompleteMe
 "Plug 'Valloric/YouCompleteMe'
 
@@ -59,12 +71,18 @@ Plug 'tpope/vim-endwise'
 " Add closed tags
 Plug 'alvan/vim-closetag'
 
+" Rails support
+Plug 'tpope/vim-rails'
+
+" Rake support
+Plug 'tpope/vim-rake'
+
 "-----------------
 " Colorschemes
 
 " Default is fine
-"Plug 'tomasr/molokai'
-"Plug 'cschlueter/vim-wombat'
+Plug 'tomasr/molokai'
+Plug 'cschlueter/vim-wombat'
 
 call plug#end()
 
@@ -105,13 +123,12 @@ let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.html.erb,*.xml.erb,*.xml"
 if &t_Co > 2 || has("gui_running")
     syntax on
     set colorcolumn=80
-    "silent! color wombat
 endif
 
 " Extra fancyness if full pallete is supported.
 if &t_Co >= 256 || has("gui_running")
     set cursorline
-    "set cursorcolumn
+    silent! color molokai
     "silent! color wombat256
 endif
 
@@ -156,6 +173,16 @@ nmap <Leader>nt :NERDTreeToggle<cr>
 " CtrlP: to CtrlT (CtrlP is for buffers)
 let g:ctrlp_map = '<C-t>'
 
+" Vim-move: set key bindings and arrow equivalents
+" Shift + <HJKL>
+let g:move_key_modifier = 'S'
+
+" Shift + Arrows
+nnoremap <S-Up> :m -2<CR>
+nnoremap <S-Down> :m +1<CR>
+inoremap <S-Up> <Esc>:m-2<CR>
+inoremap <S-Down> <Esc>:m+<CR>
+
 " Vim-buftabline: work with buffer tabs
 set hidden
 map <C-N>  :bnext<CR>
@@ -167,5 +194,23 @@ imap <C-P> <Esc>:bprev<CR>a
 nmap <F5> :set invrelativenumber<CR>
 imap <F5> <ESC>:set invrelativenumber<CR>a
 
-"Tagbag: togle code browser
+" Tagbag: togle code browser
 nmap <F8> :TagbarToggle<CR>
+
+" CTags
+set tags=./tags;
+
+" Use Ack instead of grep
+set grepprg=ack
+
+" Grep jumps mapping
+nmap <F3> :cprev<CR>
+nmap <S-F3> :cpfile<CR>
+nmap <C-F3> :colder<CR>
+nmap <F4> :cnext<CR>
+nmap <S-F4> :cnfile<CR>
+nmap <C-F4> :cnewer<CR>
+
+" Autostart plugins
+" autocmd VimEnter * NERDTree
+autocmd VimEnter * Tagbar

@@ -12,10 +12,10 @@ ZSH_THEME="myagnoster"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ruby vi-mode virtualenv gem pip)
+plugins=(git vi-mode gem pip zsh-syntax-highlighting)
 
 # your project folder that we can `c [tab]` to
-export PROJECTS=~/Workspace/repos
+export PROJECTS=~/Workspace
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
 # of your main dotfiles repository (which may be public, like this one), but
@@ -59,6 +59,9 @@ source $ZSH/oh-my-zsh.sh
 if command -v tmux>/dev/null; then
   [[ ! $TERM =~ screen ]] && [ -z $TMUX ] && exec tmux
 fi
+
+# Disable 'Ctrl-s'
+stty -ixon
 
 # load important path at first
 PATH="$HOME/.rvm/gems/ruby-2.4.0/bin:$PATH"

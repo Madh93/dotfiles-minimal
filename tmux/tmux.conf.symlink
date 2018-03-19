@@ -13,20 +13,22 @@ set -g mouse on
 
 # First window is window 1 (not 0)
 set -g base-index 1
+set -g pane-base-index 1
 
 # Pane resize
-bind-key h resize-pane -L 5
-bind-key j resize-pane -D 5
-bind-key u resize-pane -U 5
-bind-key k resize-pane -R 5
+bind h resize-pane -L 5
+bind j resize-pane -D 5
+bind u resize-pane -U 5
+bind k resize-pane -R 5
 
 
 ###-----------------------#
 ## Appearance and colors ##
 #-----------------------###
 
-# Terminal is in 256 color mode by default
-set -g default-terminal "screen-256color"
+# Terminal is in TRUE color (24-bit) mode by default
+set -g default-terminal "xterm-256color"
+set -ga terminal-overrides ",xterm-256color:Tc"
 
 # Status bar appearance
 set -g status-left "#[bg=blue,fg=white] #H "
@@ -48,7 +50,10 @@ set -g window-status-format " #I #W "
 set-option -g default-shell ${SHELL}
 
 # Reload my configuration
-bind-key r source-file ~/.tmux.conf
+bind r source-file ~/.tmux.conf
 
 # Copy from tmux into x clipboard
 bind y run "tmux save-buffer - | xclip -selection clipboard &>/dev/null"
+
+# Synchronize panes
+bind e set-window-option synchronize-panes
